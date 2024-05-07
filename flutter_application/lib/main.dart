@@ -13,8 +13,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const MyHomePage(),
+    return const MaterialApp(
+      home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -27,7 +27,7 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
+String apiUrlString = "https://edc2-186-189-71-211.ngrok-free.app/api/sitios";
 // homepage state
 class _MyHomePageState extends State<MyHomePage> {
 
@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // function to fetch data from api and return future list of posts
   static Future<List<Sitios>> getPosts() async {
     print("pase por aca");
-    var url = Uri.parse("https://edc2-186-189-71-211.ngrok-free.app/api/sitios");
+    var url = Uri.parse(apiUrlString);
     final response = await http.get(url, headers: {"Content-Type": "application/json"});
     print(response.body);
     final List body = json.decode(response.body);
@@ -79,14 +79,14 @@ class _MyHomePageState extends State<MyHomePage> {
         final post = posts[index];
         return Container(
           color: Colors.grey.shade300,
-          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           height: 100,
           width: double.maxFinite,
           child: Row(
             children: [
               Expanded(flex: 1, child: Image.network(post.direccion!)),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(flex: 3, child: Text(post.nombre!)),
             ],
           ),
