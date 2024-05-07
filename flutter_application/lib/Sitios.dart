@@ -12,10 +12,10 @@ class Sitios {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['direccion'] = this.direccion;
-    data['id'] = this.id;
-    data['nombre'] = this.nombre;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['direccion'] = direccion;
+    data['id'] = id;
+    data['nombre'] = nombre;
     return data;
   }
 }
