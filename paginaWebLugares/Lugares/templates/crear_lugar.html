@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Lugar</title>
+</head>
+<body>
+    <h1>Crear Lugar</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_nombre_lugar">Nombre del lugar:</label>
+        <input type="text" id="id_nombre_lugar" name="nombre_lugar"><br>
+        <label for="id_ubicacion_lugar">Ubicación del lugar:</label>
+        <input type="text" id="id_ubicacion_lugar" name="ubicacion_lugar"><br>
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>
