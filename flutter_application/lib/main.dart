@@ -31,11 +31,11 @@ String apiUrlString = "https://edc2-186-189-71-211.ngrok-free.app/api/sitios";
 // homepage state
 class _MyHomePageState extends State<MyHomePage> {
 
-  // variable to call and store future list of posts
-  Future<List<Sitios>> postsFuture = getPosts();
+  // variable to call and store future list of sites
+  Future<List<Sitios>> sitiosFuture = getSitios();
 
-  // function to fetch data from api and return future list of posts
-  static Future<List<Sitios>> getPosts() async {
+  // function to fetch data from api and return future list of sites
+  static Future<List<Sitios>> getSitios() async {
     print("pase por aca");
     var url = Uri.parse(apiUrlString);
     final response = await http.get(url, headers: {"Content-Type": "application/json"});
@@ -51,15 +51,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // FutureBuilder
         child: FutureBuilder<List<Sitios>>(
-          future: postsFuture,
+          future: sitiosFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // until data is fetched, show loader
               return const CircularProgressIndicator();
             } else if (snapshot.hasData) {
-              // once data is fetched, display it on screen (call buildPosts())
-              final posts = snapshot.data!;
-              return buildPosts(posts);
+              // once data is fetched, display it on screen (call buildSitios())
+              final sitios = snapshot.data!;
+              return buildSitios(sitios);
             } else {
               // if no data, show simple Text
               return const Text("no hay datos lalalala");
@@ -71,12 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // function to display fetched data on screen
-  Widget buildPosts(List<Sitios> posts) {
+  Widget buildSitios(List<Sitios> sitios) {
     // ListView Builder to show data in a list
     return ListView.builder(
-      itemCount: posts.length,
+      itemCount: sitios.length,
       itemBuilder: (context, index) {
-        final post = posts[index];
+        final sitio = sitios[index];
         return Container(
           color: Colors.grey.shade300,
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -85,9 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
           width: double.maxFinite,
           child: Row(
             children: [
-              Expanded(flex: 1, child: Image.network(post.direccion!)),
+              Expanded(flex: 1, child: Image.network(sitio.direccion!)),
               const SizedBox(width: 10),
-              Expanded(flex: 3, child: Text(post.nombre!)),
+              Expanded(flex: 3, child: Text(sitio.nombre!)),
             ],
           ),
         );
