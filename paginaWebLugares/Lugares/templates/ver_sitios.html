@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Sitios</title>
+</head>
+<body>
+    <h1>Lista de sitios</h1>
+    <form action="{% url 'eliminar sitios' %}" method="post">
+        {% csrf_token %}
+        <ul>
+            {% for sitio in sitios %}
+                <input type="checkbox" name="listaSitiosEliminar" value="{{ sitio.id_sitio }}">
+                <li>ID: {{ sitio.id_sitio }}, Latitud: {{ sitio.latitud }}, Longitud: {{ sitio.longitud }}, Nombre: {{ sitio.nombre_sitio }}</li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Eliminar seleccionados</button>
+    </form>
+    <li><a href="{% url 'pagina principal' %}">Volver a la pagina principal</a></li>
+</body>
+</html>

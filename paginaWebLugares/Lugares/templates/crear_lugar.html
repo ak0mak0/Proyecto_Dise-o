@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Crear Lugar</title>
+    <title>Administracion de Lugares</title>
 </head>
 <body>
     <h1>Crear Lugar</h1>
     <form method="post">
         {% csrf_token %}
-        <label for="id_nombre_lugar">Nombre del lugar:</label>
-        <input type="text" id="id_nombre_lugar" name="nombre_lugar"><br>
-        <label for="id_ubicacion_lugar">Ubicación del lugar:</label>
-        <input type="text" id="id_ubicacion_lugar" name="ubicacion_lugar"><br>
-        <button type="submit">Guardar</button>
+            <label for="id_sitio">ID del Sitio:</label>
+            <input type="Integer" id="id_sitio" name="id_sitio" step="1" required><br>
+            <label for="latitud">Latitud:</label>
+            <input type="number" id="latitud" name="latitud" step="any" required><br>
+            <label for="longitud">Longitud:</label>
+            <input type="number" id="longitud" name="longitud" step="any" required><br>
+            <label for="nombre_sitio">Nombre del Sitio:</label>
+            <input type="text" id="nombre_sitio" name="nombre_sitio" required><br>
+            <button type="submit">Guardar</button>
     </form>
+    <li><a href="{% url 'pagina principal' %}">Volver a la pagina principal</a></li>
 </body>
 </html>
