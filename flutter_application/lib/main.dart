@@ -60,9 +60,11 @@ class _MyHomePageState extends State<MyHomePage> {
               // once data is fetched, display it on screen (call buildSitios())
               final sitios = snapshot.data!;
               return buildSitios(sitios);
-            } else {
+            } else if(snapshot.hasError) {
               // if no data, show simple Text
-              return const Text("no hay datos lalalala");
+              return Text('Error: ${snapshot.error}');
+            } else{
+              return const Text(' no se que acaba de pasar');
             }
           },
         ),
