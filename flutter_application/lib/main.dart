@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_application_1/sitios.dart';
+import 'package:flutter_application_1/sitio.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -27,21 +27,21 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-String apiUrlString = "https://edc2-186-189-71-211.ngrok-free.app/api/sitios";
+String apiUrlString = "https://b7ef-2800-300-69f1-a5d0-f4df-50b8-1871-712d.ngrok-free.app/api/sitios";
 // homepage state
 class _MyHomePageState extends State<MyHomePage> {
 
   // variable to call and store future list of sites
-  Future<List<Sitios>> sitiosFuture = getSitios();
+  Future<List<Sitio>> sitiosFuture = getSitios();
 
   // function to fetch data from api and return future list of sites
-  static Future<List<Sitios>> getSitios() async {
+  static Future<List<Sitio>> getSitios() async {
     print("pase por aca");
     var url = Uri.parse(apiUrlString);
     final response = await http.get(url, headers: {"Content-Type": "application/json"});
     print(response.body);
     final List body = json.decode(response.body);
-    return body.map((e) => Sitios.fromJson(e)).toList();
+    return body.map((e) => Sitio.fromJson(e)).toList();
   }
   
   // build function
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Center(
         // FutureBuilder
-        child: FutureBuilder<List<Sitios>>(
+        child: FutureBuilder<List<Sitio>>(
           future: sitiosFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // function to display fetched data on screen
-  Widget buildSitios(List<Sitios> sitios) {
+  Widget buildSitios(List<Sitio> sitios) {
     // ListView Builder to show data in a list
     return ListView.builder(
       itemCount: sitios.length,
@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
           width: double.maxFinite,
           child: Row(
             children: [
-              Expanded(flex: 1, child: Image.network(sitio.direccion!)),
+              Expanded(flex: 1, child: Column(children: [Text("latitud: ${sitio.latitud!}"),Text("longitud: ${sitio.longitud!}")])),
               const SizedBox(width: 10),
               Expanded(flex: 3, child: Text(sitio.nombre!)),
             ],
