@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import collection
+from .models import collection, generarID
 
 def sitios(request):
     return render(request, 'pagina_principal.html') 
 
 def agregarSitio(request):
     if request.method == 'POST':
-        # Obtener datos del formulario
-        id_sitio = int(request.POST.get('id_sitio'))
+        id_sitio = generarID()
         latitud = float(request.POST.get('latitud'))
         longitud = float(request.POST.get('longitud'))
         nombre_sitio = request.POST.get('nombre_sitio')
@@ -15,14 +14,13 @@ def agregarSitio(request):
         # Insertar datos en MongoDB
         nuevo_sitio = {"id_sitio": id_sitio, "latitud": latitud, 
                        "longitud": longitud, "nombre_sitio": nombre_sitio}
-        sitioValido = collection.find_one({'id_sitio': nuevo_sitio['id_sitio']})
-        if not sitioValido:
+        sitioNoValido = collection.find_one({'nombre_sitio': nuevo_sitio['nombre_sitio']})
+        if not sitioNoValido:
             collection.insert_one(nuevo_sitio)
             return render(request, 'lugar_creado.html')
         else:
             return render(request, 'creacion_erronea.html')            
     else:
-        # Renderizar el formulario
         return render(request, 'crear_lugar.html')
 
 def verSitios(request):
@@ -32,7 +30,8 @@ def verSitios(request):
 def borrarSitios(request):
     if request.method == 'POST':
         idsEliminar = request.POST.getlist('listaSitiosEliminar')
-        print(idsEliminar[0])
+        sitiosEliminados = list()
         for id in idsEliminar:
+            sitiosEliminados.append(collection.find_one({'id_sitio': int(id)}))
             collection.delete_one({'id_sitio': int(id)})
-        return render(request, 'ver_sitios.html', {'sitios': sitios})
+        return render(request, 'sitios_borrados.html', {'sitios': sitiosEliminados})

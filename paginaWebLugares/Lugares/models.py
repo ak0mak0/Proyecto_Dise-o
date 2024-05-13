@@ -10,3 +10,7 @@ collection = db["sitios"]
 #client = MongoClient(uri)
 #db = client["proyectoSemestralDis"]
 #collection = db["lugares"]
+
+def generarID():
+    listaSitios = list(collection.find())
+    return (len(listaSitios) + 1)

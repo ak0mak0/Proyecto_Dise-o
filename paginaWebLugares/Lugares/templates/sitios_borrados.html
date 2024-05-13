@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sitios eliminados</title>
+</head>
+<body>
+    <h1>Se han eliminado los sitios</h1>
+    <ul>
+        {% for sitio in sitios %}
+            <li>ID: {{ sitio.id_sitio }}, Latitud: {{ sitio.latitud }}, Longitud: {{ sitio.longitud }}, Nombre: {{ sitio.nombre_sitio }}</li>
+        {% endfor %}
+    </ul>
+        <li><a href="{% url 'pagina principal' %}">Volver a la pagina principal</a></li>
+        <li><a href="{% url 'ver sitios' %}">Volver a la lista de sitios</a></li>
+    </ul>
+</body>
+</html>
