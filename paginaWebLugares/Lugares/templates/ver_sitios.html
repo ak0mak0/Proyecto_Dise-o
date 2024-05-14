@@ -2,10 +2,13 @@
 <html>
 <head>
     <title>Lista de Sitios</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/stylePaginaPrincipal.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styleVerSitios.css' %}">
 </head>
 <body>
     <h1>Lista de sitios</h1>
-    <form action="{% url 'eliminar sitios' %}" method="post">
+    <form action="{% url 'eliminar sitios' %}" method="post" onsubmit="return validarSeleccion()">
         {% csrf_token %}
         <ul>
             {% for sitio in sitios %}
@@ -16,5 +19,15 @@
         <button type="submit">Eliminar seleccionados</button>
     </form>
     <li><a href="{% url 'pagina principal' %}">Volver a la pagina principal</a></li>
+    <script>
+        function validarSeleccion() {
+            var checkboxes = document.querySelectorAll('input[name="listaSitiosEliminar"]:checked');
+            if (checkboxes.length === 0) {
+                alert("Debes seleccionar al menos un sitio de la lista.");
+                return false; // Detiene el envío del formulario
+            }
+            return true; // Permite el envío del formulario
+        }
+    </script>
 </body>
 </html>
