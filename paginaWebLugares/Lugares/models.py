@@ -11,6 +11,10 @@ collection = db["sitios"]
 #db = client["proyectoSemestralDis"]
 #collection = db["lugares"]
 
-def generarID():
-    listaSitios = list(collection.find())
-    return (len(listaSitios) + 1)
+def generarID(sequence_name):
+    counter = db.counters.find_one_and_update(
+        {"_id": sequence_name},
+        {"$inc": {"sequence_value": 1}},
+        return_document=True
+    )
+    return counter["sequence_value"]

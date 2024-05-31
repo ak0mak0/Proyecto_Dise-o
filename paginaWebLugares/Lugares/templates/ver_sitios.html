@@ -12,8 +12,8 @@
         {% csrf_token %}
         <ul>
             {% for sitio in sitios %}
-                <input type="checkbox" name="listaSitiosEliminar" value="{{ sitio.id_sitio }}">
-                <li>ID: {{ sitio.id_sitio }}, Latitud: {{ sitio.latitud }}, Longitud: {{ sitio.longitud }}, Nombre: {{ sitio.nombre_sitio }}</li>
+                <input type="checkbox" name="listaSitiosEliminar" value="{{ sitio.id }}">
+                <li>ID: {{ sitio.id }}, Latitud: {{ sitio.latitud }}, Longitud: {{ sitio.longitud }}, Nombre: {{ sitio.nombre_sitio }}</li>
             {% endfor %}
         </ul>
         <button type="submit">Eliminar seleccionados</button>
