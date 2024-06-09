@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+</head>
+<body>
+    <h2>Registro</h2>
+    {% if error %}
+        <div style="color: red;">{{ error }}</div>
+    {% endif %}
+    <form action="{{ url_for('registro') }}" method="post">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32, placeholder="Nombre de usuario") }}<br>
+            {% for error in form.username.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32, placeholder="Nombre") }}<br>
+            {% for error in form.name.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32, placeholder="Contraseña") }}<br>
+            {% for error in form.password.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+    <p>¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a></p>
+</body>
+</html>

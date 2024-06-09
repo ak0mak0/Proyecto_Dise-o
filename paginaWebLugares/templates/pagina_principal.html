@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Página Principal{% endblock %}
+
+{% block content %}
+    <p></p>
+    <ul>
+        <li><a href="{{ url_for('ver_lugares') }}">Ver Lugares</a></li>
+        <li><a href="{{ url_for('agregar_lugar') }}">Agregar Nuevo Lugar</a></li>
+    </ul>
+{% endblock %}

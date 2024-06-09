@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Nuevo Lugar</title>
+</head>
+<body>
+    <h2>Agregar Nuevo Lugar</h2>
+    {% if error %}
+    <div style="color: red;">{{ error }}</div>
+    {% endif %}
+    <form action="{{ url_for('agregar_lugar') }}" method="post">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.latitud.label }}<br>
+            {{ form.latitud(size=32, placeholder="Latitud") }}<br>
+            {% for error in form.latitud.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.longitud.label }}<br>
+            {{ form.longitud(size=32, placeholder="Longitud") }}<br>
+            {% for error in form.longitud.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.nombre.label }}<br>
+            {{ form.nombre(size=32, placeholder="Nombre del Sitio") }}<br>
+            {% for error in form.nombre.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div>
+            <button type="submit">Crear Sitio</button>
+        </div>
+    </form>
+    <br>
+    <a href="{{ url_for('lugares') }}">Volver</a>
+</body>
+</html>

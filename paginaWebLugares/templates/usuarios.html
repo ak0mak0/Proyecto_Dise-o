@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+</head>
+<body>
+    <h2>Lista de Usuarios</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Password Hash</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user._id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.password }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('lugares') }}">Volver a Inicio</a>
+</body>
+</html>
