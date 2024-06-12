@@ -1,43 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Nuevo Lugar</title>
+    <title>Agregar Lugar</title>
+    <!-- Enlace a Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h2>Agregar Nuevo Lugar</h2>
-    {% if error %}
-    <div style="color: red;">{{ error }}</div>
-    {% endif %}
-    <form action="{{ url_for('agregar_lugar') }}" method="post">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.latitud.label }}<br>
-            {{ form.latitud(size=32, placeholder="Latitud") }}<br>
-            {% for error in form.latitud.errors %}
-                <span style="color: red;">{{ error }}</span><br>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.longitud.label }}<br>
-            {{ form.longitud(size=32, placeholder="Longitud") }}<br>
-            {% for error in form.longitud.errors %}
-                <span style="color: red;">{{ error }}</span><br>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.nombre.label }}<br>
-            {{ form.nombre(size=32, placeholder="Nombre del Sitio") }}<br>
-            {% for error in form.nombre.errors %}
-                <span style="color: red;">{{ error }}</span><br>
-            {% endfor %}
-        </div>
-        <div>
-            <button type="submit">Crear Sitio</button>
-        </div>
-    </form>
-    <br>
-    <a href="{{ url_for('lugares') }}">Volver</a>
+    <div class="container mt-5">
+        <h2>Agregar Lugar</h2>
+        {% if error %}
+        <div style="color: red;">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('agregar_lugar') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                <label for="nombre">{{ form.nombre.label }}</label>
+                {{ form.nombre(class="form-control") }}
+                {% for error in form.nombre.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">{{ form.descripcion.label }}</label>
+                {{ form.descripcion(class="form-control") }}
+                {% for error in form.descripcion.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="latitud">{{ form.latitud.label }}</label>
+                {{ form.latitud(class="form-control") }}
+                {% for error in form.latitud.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="longitud">{{ form.longitud.label }}</label>
+                {{ form.longitud(class="form-control") }}
+                {% for error in form.longitud.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="categorias">{{ form.categorias.label }}</label>
+                {{ form.categorias(class="form-control") }}
+                {% for error in form.categorias.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="estado">{{ form.estado.label }}</label>
+                {{ form.estado(class="form-control") }}
+                {% for error in form.estado.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+    
+    <!-- Enlace a Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

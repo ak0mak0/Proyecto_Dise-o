@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block title %}Lista de Sitios{% endblock %}
+
+{% block content %}        
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Sitios</title>
+    <!-- Enlace a Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Lista de Sitios</h2>
+        <ul class="list-group">
+            {% for sitio in sitios %}
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ sitio.nombre }}</span>
+                    <button class="btn btn-primary" type="button" onclick="mostrarDetalle('{{ sitio._id }}')">Mostrar Detalles</button>
+                </div>
+                <div id="detalle_{{ sitio._id }}" style="display: none;">
+                    <p><strong>Latitud:</strong> {{ sitio.latitud }}</p>
+                    <p><strong>Longitud:</strong> {{ sitio.longitud }}</p>
+                    <p><strong>Categorías:</strong> {{ sitio.categorias }}</p>
+                    <!-- Agrega aquí más detalles si es necesario -->
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    {% endblock %}
+    <!-- Enlace a Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function mostrarDetalle(sitioId) {
+            var detalle = document.getElementById("detalle_" + sitioId);
+            if (detalle.style.display === "none") {
+                detalle.style.display = "block";
+            } else {
+                detalle.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

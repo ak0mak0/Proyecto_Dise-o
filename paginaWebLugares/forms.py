@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import SelectField ,StringField, PasswordField, SubmitField, TextAreaField, FloatField
 from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
@@ -9,12 +9,16 @@ class LoginForm(FlaskForm):
 
 class RegistroForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    name = StringField('name', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
+    es_admin = SelectField('es_admin', choices=[('si', 'Sí'), ('no', 'No')], validators=[DataRequired()])
     submit = SubmitField('Registro')
 
 class AgregarLugarForm(FlaskForm):
     nombre = StringField('nombre', validators=[DataRequired()])
-    latitud = StringField('latitud', validators=[DataRequired()])
-    longitud = StringField('longitud', validators=[DataRequired()])
-    submit = SubmitField('Agregar')
+    descripcion = TextAreaField('descripcion', validators=[DataRequired()])
+    latitud = FloatField('latitud', validators=[DataRequired()])
+    longitud = FloatField('longitud', validators=[DataRequired()])
+    categorias = SelectField('categorias', choices=[('comida', 'Comida'), ('cultura', 'Cultura'), ('deporte', 'Deporte'), ('naturaleza', 'Naturaleza'), ('vidaNocturna', 'Vida Nocturna'), ('parque', 'Parque'), ('escultura', 'Escultura')], validators=[DataRequired()])
+    estado = SelectField('estado', choices=[('activo', 'Activo'), ('inactivo', 'Inactivo')], validators=[DataRequired()]) 
+    submit = SubmitField('Agregar Lugar')

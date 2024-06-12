@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
-from models import collectionSitios, collectionUsuarios, User, generarID
+from models import collectionSitios, collectionUsuarios, User
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from forms import LoginForm, RegistroForm, AgregarLugarForm
 from bson import ObjectId
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'pinwino'
@@ -43,17 +44,27 @@ def registro():
     form = RegistroForm()
     if form.validate_on_submit():
         username = form.username.data
-        name = form.name.data
+        email = form.email.data
         password = form.password.data
+        es_admin = form.es_admin.data
+        if es_admin == 'si':
+            es_admin = True
+        else:
+            es_admin = False
+        
         usuarioExistente = User.find_by_username(username)
         if usuarioExistente is None:
             hashed_password = generate_password_hash(password)
             user_id = collectionUsuarios.insert_one({
-                "username": username,
-                "name": name,
-                "password": hashed_password
+                "nombre": username,
+                "password": hashed_password,
+                "email": email,
+                "estado": "activo",
+                "usuario_creacion": "paginaWebLugares",
+                "es_administrador": es_admin,
+                "fecha_creacion": datetime.now()
             }).inserted_id
-            user = User(user_id, username, name, hashed_password)
+            user = User(user_id, username, hashed_password)
             login_user(user)
             return redirect(url_for('lugares'))
         else:
@@ -75,7 +86,7 @@ def lugares():
 @login_required
 def ver_lugares():
     lugares = collectionSitios.find()
-    return render_template('ver_lugares.html', lugares=lugares)
+    return render_template('ver_sitios.html', sitios=lugares)
 
 @app.route('/agregar-lugar', methods=['GET', 'POST'])
 @login_required
@@ -84,19 +95,25 @@ def agregar_lugar():
     form = AgregarLugarForm()
     if form.validate_on_submit():
         nombre = form.nombre.data
+        descripcion = form.descripcion.data
         latitud = float(form.latitud.data)
         longitud = float(form.longitud.data)
-        id = generarID("sitioid")
-        
+        categoria = list(form.categorias.data)
+        estado = form.estado.data
+
+
         lugarValido = collectionSitios.find_one({"nombre": nombre})
         if lugarValido is not None:
             error = "El lugar ya existe."
         else:
             collectionSitios.insert_one({
-                "_id": id, # Cambiar por "id = generarID()
+                "nombre": nombre,
+                "descripcion": descripcion,
                 "latitud": latitud,
                 "longitud": longitud,
-                "nombre_sitio": nombre
+                "categorias": categoria,
+                "estado": estado,
+                'usuario_creo': current_user.username,
             })
             return redirect(url_for('ver_lugares'))
     return render_template('agregar_lugar.html', form=form, error=error)
