@@ -3,6 +3,7 @@ from pymongo import MongoClient, errors
 uri = "mongodb+srv://beespinoza2022:eVsJfxayY1I1586t@cluster0.yblbnqi.mongodb.net/?retryWrites=true&w=majority&appName=cluster0"
 client = MongoClient(uri)
 db = client["proyectoSemestralDis"]
+
 collectionSitios = db["sitios"]
 
 if "sitios" not in db.list_collection_names():
@@ -11,7 +12,7 @@ if "sitios" not in db.list_collection_names():
                              {
           "$jsonSchema": {
             "bsonType": "object",
-            "required": ["nombre", "descripcion", "latitud", "longitud", "categorias", "estado", "fecha_creacion", "usuario_creo"],
+            "required": ["nombre", "descripcion", "latitud", "longitud", "categorias", "estado", "usuario_creo"],
             "properties": {
               "nombre": {
                 "bsonType": "string",
@@ -105,11 +106,15 @@ if "usuarios" not in db.list_collection_names():
             {
             "$jsonSchema": {
                 "bsonType": "object",
-                "required": ["nombre", "email", "estado", "usuario_creacion", "es_administrador"],
+                "required": ["nombre", "password", "email", "estado", "usuario_creacion", "es_administrador"],
                 "properties": {
                   "nombre": {
                     "bsonType": "string",
                     "description": "El nombre del usuario debe ser una cadena de texto y es obligatorio"
+                  },
+                  "password": {
+                    "bsonType": "string",
+                    "description": "La contraseña del usuario debe ser una cadena de texto y es obligatorio"
                   },
                   "email": {
                     "bsonType": "string",
@@ -162,61 +167,126 @@ if "usuarios" not in db.list_collection_names():
     except errors.CollectionInvalid:
         pass
 
-    
-class Usuario:
-    def __init__(self, user_id, nombre, sitios_visitados):
-        self.user_id = user_id
-        self.nombre = nombre
-        self.sitios_visitados = sitios_visitados
-    
-    @classmethod
-    def from_json(cls, json_data):
-        if json_data:
-            return cls(
-                user_id = json_data.get('_id'),
-                nombre = json_data.get('name'),
-                sitios_visitados = json_data.get('visited_sites', [])
-            )
-        return None
-    
-class Sitio:
-    def __init__(self, nombre_sitio, latitud, longitud, descripcion=None, tags=None, categoria=None, popularidad=0, rating=0.0, horario_apertura=None, direccion=None):
-        self.nombre_sitio = nombre_sitio
-        self.latitud = latitud
-        self.longitud = longitud
-        self.descripcion = descripcion
-        self.tags = tags if tags is not None else []
-        self.categoria = categoria
-        self.popularidad = popularidad
-        self.rating = rating
-        self.horario_apertura = horario_apertura
-        self.direccion = direccion
+collectionCategorias = db["categorias"]
 
-    @classmethod
-    def from_json(cls, json_data):
-        return cls(
-            nombre_sitio=json_data.get('nombre_sitio'),
-            latitud=json_data.get('latitud'),
-            longitud=json_data.get('longitud'),
-            descripcion=json_data.get('descripcion'),
-            tags=json_data.get('tags', []),
-            categoria=json_data.get('categoria'),
-            popularidad=json_data.get('popularidad', 0),
-            rating=json_data.get('rating', 0.0),
-            horario_apertura=json_data.get('horario_apertura'),
-            direccion=json_data.get('direccion')
+if "categorias" not in db.list_collection_names():
+    try:
+        db.create_collection("categorias", validator=
+            {
+            "$jsonSchema": {
+                "bsonType": "object",
+                "required": ["nombre", "descripcion", "estado", "usuario_creo"],
+                "properties": {
+                  "nombre": {
+                    "bsonType": "string",
+                    "description": "El nombre de la categoría debe ser una cadena de texto y es obligatorio"
+                  },
+                  "descripcion": {
+                    "bsonType": "string",
+                    "description": "La descripción de la categoría debe ser una cadena de texto y es obligatoria"
+                  },
+                  "estado": {
+                    "bsonType": "string",
+                    "enum": ["activo", "inactivo"],
+                    "description": "El estado de la categoría debe ser 'activo' o 'inactivo' y es obligatorio"
+                  },
+                  "fecha_creacion": {
+                    "bsonType": "date",
+                    "description": "La fecha de creación de la categoría debe ser una fecha y es obligatoria"
+                  },
+                  "usuario_creo": {
+                    "bsonType": "string",
+                    "description": "El usuario que creó la categoría debe ser una cadena de texto y es obligatorio"
+                  },
+                  "fecha_modificacion": {
+                    "bsonType": "date",
+                    "description": "La fecha de la última modificación de la categoría debe ser una fecha"
+                  },
+                  "usuario_modifico": {
+                    "bsonType": "string",
+                    "description": "El usuario que realizó la última modificación debe ser una cadena de texto"
+                  },
+                  "fecha_ultimo_ingreso": {
+                    "bsonType": "date",
+                    "description": "La fecha del último ingreso de la categoría debe ser una fecha"
+                  }
+                }
+              }
+            }
         )
+    except errors.CollectionInvalid:
+        pass
 
-    def to_json(self):
-        return {
-            'nombre_sitio': self.nombre_sitio,
-            'latitud': self.latitud,
-            'longitud': self.longitud,
-            'descripcion': self.descripcion,
-            'tags': self.tags,
-            'categoria': self.categoria,
-            'popularidad': self.popularidad,
-            'rating': self.rating,
-            'horario_apertura': self.horario_apertura,
-            'direccion': self.direccion
-        }
+collectionRecomendaciones = db["recomendaciones"]
+
+if "recomendaciones" not in db.list_collection_names():
+    try:
+        db.create_collection("recomendaciones", validator=
+            {
+            "$jsonSchema": {
+                "bsonType": "object",
+                "required": ["usuario", "sitio_actual"],
+                "properties": {
+                  "usuario": {
+                    "bsonType": "string",
+                    "description": "El nombre del usuario debe ser una cadena de texto y es obligatorio"
+                  },
+                  "sitio_actual": {
+                    "bsonType": "string",
+                    "description": "El sitio actual del usuario debe ser una cadena de texto y es obligatorio"
+                  },
+                  "fecha_recomendacion": {
+                    "bsonType": "date",
+                    "description": "La fecha de la recomendación debe ser una fecha"
+                  },
+                  "like": {
+                    "bsonType": "bool",
+                    "description": "Indica si la recomendación fue un like"
+                  },
+                  "fecha_like": {
+                    "bsonType": "date",
+                    "description": "La fecha en la que el usuario da el like, debe ser una fecha"
+                  }
+                }
+              }
+            }
+        )
+    except errors.CollectionInvalid:
+        pass
+
+collectionReviews = db["reviews"]
+
+if "reviews" not in db.list_collection_names():
+    try:
+        db.create_collection("reviews", validator=
+            {
+            "$jsonSchema": {
+                "bsonType": "object",
+                "required": ["usuario", "sitio", "calificacion", "comentario", "fecha"],
+                "properties": {
+                  "usuario": {
+                    "bsonType": "string",
+                    "description": "El nombre del usuario que hizo la reseña debe ser una cadena de texto y es obligatorio"
+                  },
+                  "sitio": {
+                    "bsonType": "string",
+                    "description": "El nombre del sitio que se reseña debe ser una cadena de texto y es obligatorio"
+                  },
+                  "fechaHora": {
+                    "bsonType": "date",
+                    "description": "La fecha de la reseña debe ser una fecha"
+                  },
+                  "calificacion": {
+                    "bsonType": "double",
+                    "description": "La calificación de la reseña debe ser un número de punto flotante y es obligatoria"
+                  },
+                  "comentario": {
+                    "bsonType": "string",
+                    "description": "El comentario de la reseña debe ser una cadena de texto y es obligatorio"
+                  }
+                }
+              }
+            }
+        )
+    except errors.CollectionInvalid:
+        pass
