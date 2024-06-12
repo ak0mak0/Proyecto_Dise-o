@@ -23,23 +23,25 @@
                     <span>{{ sitio.nombre }}</span>
                     <button class="btn btn-primary" type="button" onclick="mostrarDetalle('{{ sitio._id }}')">Mostrar Detalles</button>
                 </div>
-                <div id="detalle_{{ sitio._id }}" style="display: none;">
+                <div id="detalle_{{ sitio._id }}" class="detalle" style="display: none;">
+                    <p><strong>Descripción:</strong> {{ sitio.descripcion }}</p>
                     <p><strong>Latitud:</strong> {{ sitio.latitud }}</p>
                     <p><strong>Longitud:</strong> {{ sitio.longitud }}</p>
                     <p><strong>Categorías:</strong> {{ sitio.categorias }}</p>
-                    <!-- Agrega aquí más detalles si es necesario -->
+                    <p><strong>Fecha de creacion:</strong> {{ sitio.fecha_creacion }}</p>
+                    <p><strong>Usuario que lo creo:</strong> {{ sitio.usuario_creo }} </p>
+                    <button class="btn btn-danger" onclick="borrarLugar('{{ sitio._id }}')">Borrar</button>
                 </div>
             </li>
             {% endfor %}
         </ul>
     </div>
     
-    {% endblock %}
     <!-- Enlace a Bootstrap JS y dependencias -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    
     <script>
         function mostrarDetalle(sitioId) {
             var detalle = document.getElementById("detalle_" + sitioId);
@@ -49,6 +51,29 @@
                 detalle.style.display = "none";
             }
         }
+        function borrarLugar(sitioId) {
+            if (confirm('¿Estás seguro de que deseas eliminar este sitio?')) {
+                fetch('/borrar_lugar/' + sitioId, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        var detalle = document.getElementById("detalle_" + sitioId);
+                        detalle.style.display = "none";
+                        alert('Sitio eliminado exitosamente.');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        alert('Error al eliminar el sitio.');
+                    }
+                }).catch(error => {
+                    alert('Error al eliminar el sitioaaaaaaa.');
+                });
+            }
+        }
     </script>
+    <a href="{{ url_for('lugares') }}">Volver a Inicio</a>
 </body>
 </html>
+
+{% endblock %}

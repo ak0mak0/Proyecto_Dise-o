@@ -15,12 +15,6 @@ db = client["proyectoSemestralDis"]
 collectionSitios = db["sitios"]
 collectionUsuarios = db["usuarios"]
 
-#uri = "mongodb+srv://beespinoza2022:eVsJfxayY1I1586t@cluster0.yblbnqi.mongodb.net/?retryWrites=true&w=majority&appName=cluster0"
-#client = MongoClient(uri)
-#db = client["proyectoSemestralDis"]
-#collectionUsuarios = db["lugares"]
-
-
 class User(UserMixin):
     def __init__(self, id, username, password):
         self.id = str(id)

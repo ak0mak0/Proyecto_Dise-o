@@ -1,8 +1,15 @@
 <!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block title %}Lista de Sitios{% endblock %}
+
+{% block content %} 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Usuarios</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
     <h2>Lista de Usuarios</h2>
@@ -11,19 +18,23 @@
             <tr>
                 <th>ID</th>
                 <th>Username</th>
-                <th>Password Hash</th>
+                <th>Fecha creacion</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr>
                 <td>{{ user._id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.password }}</td>
+                <td>{{ user.nombre }}</td>
+                <td>{{ user.fecha_creacion }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <a href="{{ url_for('lugares') }}">Volver a Inicio</a>
 </body>
 </html>
+{% endblock %}

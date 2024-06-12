@@ -1,10 +1,10 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 from models import collectionSitios, collectionUsuarios, User
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from forms import LoginForm, RegistroForm, AgregarLugarForm
-from bson import ObjectId
+from bson import ObjectId 
 from datetime import datetime
 
 app = Flask(__name__)
@@ -98,7 +98,7 @@ def agregar_lugar():
         descripcion = form.descripcion.data
         latitud = float(form.latitud.data)
         longitud = float(form.longitud.data)
-        categoria = list(form.categorias.data)
+        categoria = request.form.getlist('categorias')
         estado = form.estado.data
 
 
@@ -113,19 +113,19 @@ def agregar_lugar():
                 "longitud": longitud,
                 "categorias": categoria,
                 "estado": estado,
+                "fecha_creacion": datetime.now(),
                 'usuario_creo': current_user.username,
             })
             return redirect(url_for('ver_lugares'))
     return render_template('agregar_lugar.html', form=form, error=error)
     
-@app.route('/eliminar-lugares', methods=['POST'])
-@login_required
-def eliminar_lugares():
-    if request.method == 'POST':
-        lugares = request.form.getlist('lugares')
-        for lugar in lugares:
-            collectionSitios.delete_one({"_id": int(lugar)})
-    return redirect(url_for('ver_lugares'))
+@app.route('/borrar_lugar/<sitio_id>', methods=['DELETE'])
+def borrar_lugar(sitio_id):
+    try:
+        collectionSitios.find_one_and_delete({'_id': ObjectId(sitio_id)})
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/users')
 @login_required

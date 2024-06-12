@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block title %}Agregar Lugar{% endblock %}
+
+{% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,57 +20,35 @@
         {% endif %}
         <form method="POST" action="{{ url_for('agregar_lugar') }}">
             {{ form.hidden_tag() }}
-
             <div class="form-group">
-                <label for="nombre">{{ form.nombre.label }}</label>
-                {{ form.nombre(class="form-control") }}
-                {% for error in form.nombre.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                {{ form.nombre.label }} {{ form.nombre(class_="form-control") }}
             </div>
-
             <div class="form-group">
-                <label for="descripcion">{{ form.descripcion.label }}</label>
-                {{ form.descripcion(class="form-control") }}
-                {% for error in form.descripcion.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                {{ form.descripcion.label }} {{ form.descripcion(class_="form-control") }}
             </div>
-
             <div class="form-group">
-                <label for="latitud">{{ form.latitud.label }}</label>
-                {{ form.latitud(class="form-control") }}
-                {% for error in form.latitud.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                {{ form.latitud.label }} {{ form.latitud(class_="form-control") }}
             </div>
-
             <div class="form-group">
-                <label for="longitud">{{ form.longitud.label }}</label>
-                {{ form.longitud(class="form-control") }}
-                {% for error in form.longitud.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                {{ form.longitud.label }} {{ form.longitud(class_="form-control") }}
             </div>
-
             <div class="form-group">
-                <label for="categorias">{{ form.categorias.label }}</label>
-                {{ form.categorias(class="form-control") }}
-                {% for error in form.categorias.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                <label for="categorias">Categorías</label>
+                <div>
+                    <input type="checkbox" name="categorias" value="comida"> Comida<br>
+                    <input type="checkbox" name="categorias" value="cultura"> Cultura<br>
+                    <input type="checkbox" name="categorias" value="deporte"> Deporte<br>
+                    <input type="checkbox" name="categorias" value="naturaleza"> Naturaleza<br>
+                    <input type="checkbox" name="categorias" value="vidaNocturna"> Vida Nocturna<br>
+                    <input type="checkbox" name="categorias" value="parque"> Parque<br>
+                    <input type="checkbox" name="categorias" value="escultura"> Escultura<br>
+                </div>
             </div>
-
             <div class="form-group">
-                <label for="estado">{{ form.estado.label }}</label>
-                {{ form.estado(class="form-control") }}
-                {% for error in form.estado.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                {% endfor %}
+                {{ form.estado.label }} {{ form.estado(class_="form-control") }}
             </div>
-
             <div class="form-group">
-                {{ form.submit(class="btn btn-primary") }}
+                {{ form.submit(class_="btn btn-primary") }}
             </div>
         </form>
     </div>
@@ -74,5 +57,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <a href="{{ url_for('lugares') }}">Volver a Inicio</a>
 </body>
 </html>
+
+{% endblock %}
