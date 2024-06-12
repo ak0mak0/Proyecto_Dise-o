@@ -1,6 +1,6 @@
 from pymongo import MongoClient, errors
 
-uri = "mongodb+srv://beespinoza2022:eVsJfxayY1I1586t@cluster0.yblbnqi.mongodb.net/?retryWrites=true&w=majority&appName=cluster0"
+uri = "mongodb+srv://akmak_1:xxWarWtqO5vVRgso@cluster0.glb67p5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri)
 db = client["proyectoSemestralDis"]
 
@@ -95,6 +95,7 @@ if "sitios" not in db.list_collection_names():
             }
           }
         })
+        print("Colección de sitios creada")
     except errors.CollectionInvalid:
         pass
 
@@ -164,6 +165,7 @@ if "usuarios" not in db.list_collection_names():
               }
             }
         )
+        print("Colección de usuarios creada")
     except errors.CollectionInvalid:
         pass
 
@@ -214,6 +216,7 @@ if "categorias" not in db.list_collection_names():
               }
             }
         )
+        print("Colección de categorías creada")
     except errors.CollectionInvalid:
         pass
 
@@ -251,6 +254,7 @@ if "recomendaciones" not in db.list_collection_names():
               }
             }
         )
+        print("Colección de recomendaciones creada")
     except errors.CollectionInvalid:
         pass
 
@@ -288,5 +292,6 @@ if "reviews" not in db.list_collection_names():
               }
             }
         )
+        print("Colección de reviews creada")
     except errors.CollectionInvalid:
         pass
