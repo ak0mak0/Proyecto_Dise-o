@@ -93,7 +93,7 @@ def ver_lugares():
 
     # Añadir nombres de sitios cercanos y parecidos a las recomendaciones
     for reco in recos:
-        reco['sitios_cercanos_nombres'] = [{'nombre': sitios_dict.get(str(cercano['_id']), 'Desconocido'), 'distancia': cercano['distancia']} for cercano in reco['sitios_cercanos']]
+        reco['sitios_cercanos_nombres'] = [{'nombre': sitios_dict.get(str(cercano), 'Desconocido')} for cercano in reco['sitios_cercanos']]
         reco['sitios_parecidos_nombres'] = [sitios_dict.get(str(parecido), 'Desconocido') for parecido in reco['sitios_parecidos']]
 
     return render_template('ver_sitios.html', sitios=sitios, recos=recos)
