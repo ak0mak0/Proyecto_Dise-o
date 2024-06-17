@@ -8,4 +8,7 @@
         <li><a href="{{ url_for('ver_lugares') }}">Ver Lugares</a></li>
         <li><a href="{{ url_for('agregar_lugar') }}">Agregar Nuevo Lugar</a></li>
     </ul>
+    <form action="{{ url_for('generar_recomendaciones') }}" method="post">
+        <button type="submit">Generar recomendaciones</button>
+    </form>
 {% endblock %}

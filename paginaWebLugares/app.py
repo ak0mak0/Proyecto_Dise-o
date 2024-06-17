@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
-from models import collectionSitios, collectionUsuarios, User
+from models import collectionRecos, collectionSitios, collectionUsuarios, User, RecomendationHandler
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from forms import LoginForm, RegistroForm, AgregarLugarForm
@@ -85,8 +85,18 @@ def lugares():
 @app.route('/ver-lugares')
 @login_required
 def ver_lugares():
-    lugares = collectionSitios.find()
-    return render_template('ver_sitios.html', sitios=lugares)
+    sitios = list(collectionSitios.find())
+    recos = list(collectionRecos.find())
+
+    # Crear un diccionario para mapear los IDs de los sitios a sus nombres
+    sitios_dict = {str(sitio['_id']): sitio['nombre'] for sitio in sitios}
+
+    # Añadir nombres de sitios cercanos y parecidos a las recomendaciones
+    for reco in recos:
+        reco['sitios_cercanos_nombres'] = [{'nombre': sitios_dict.get(str(cercano['_id']), 'Desconocido'), 'distancia': cercano['distancia']} for cercano in reco['sitios_cercanos']]
+        reco['sitios_parecidos_nombres'] = [sitios_dict.get(str(parecido), 'Desconocido') for parecido in reco['sitios_parecidos']]
+
+    return render_template('ver_sitios.html', sitios=sitios, recos=recos)
 
 @app.route('/agregar-lugar', methods=['GET', 'POST'])
 @login_required
@@ -133,3 +143,10 @@ def users():
     users_list = collectionUsuarios.find()
     return render_template('usuarios.html', users=users_list)
 
+@app.route('/generar-recomendaciones', methods=['POST'])
+@login_required
+def generar_recomendaciones():
+    recomendation = RecomendationHandler()
+    recomendation.reset_recos_sitios_collection()
+    recomendation.generar_recomendaciones(recomendation)
+    return redirect(url_for('ver_lugares'))

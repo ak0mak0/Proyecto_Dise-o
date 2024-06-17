@@ -30,6 +30,29 @@
                     <p><strong>Categorías:</strong> {{ sitio.categorias }}</p>
                     <p><strong>Fecha de creacion:</strong> {{ sitio.fecha_creacion }}</p>
                     <p><strong>Usuario que lo creo:</strong> {{ sitio.usuario_creo }} </p>
+                    <div style="margin-top: 15px;">
+                        <p><strong>Recomendaciones:</strong></p>
+                        <p><strong>Sitios Cercanos:</strong></p>
+                        <ul>
+                            {% for reco in recos %}
+                                {% if reco._idsitio == sitio._id %}
+                                    {% for cercano in reco.sitios_cercanos_nombres %}
+                                        <li>{{ cercano.nombre }} (Distancia: {{ cercano.distancia }})</li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <p><strong>Sitios Parecidos:</strong></p>
+                        <ul>
+                            {% for reco in recos %}
+                                {% if reco._idsitio == sitio._id %}
+                                    {% for parecido in reco.sitios_parecidos_nombres %}
+                                        <li>{{ parecido }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
                     <button class="btn btn-danger" onclick="borrarLugar('{{ sitio._id }}')">Borrar</button>
                 </div>
             </li>
