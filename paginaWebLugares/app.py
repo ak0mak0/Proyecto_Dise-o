@@ -20,6 +20,8 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.get(user_id)
 
+# Rutas
+# Rutas de autenticación
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -38,6 +40,7 @@ def login():
             error = "Usuario o contraseña incorrectos."
     return render_template('login.html', form=form, error=error)
 
+# Ruta de registro
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
     error = None
@@ -71,17 +74,20 @@ def registro():
             error = "El usuario ya existe."
     return render_template('registro.html', form=form, error=error)
 
+# Ruta de logout
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# Ruta principal
 @app.route('/')
 @login_required
 def lugares():
     return render_template('pagina_principal.html')
 
+# Ruta para ver los lugares
 @app.route('/ver-lugares')
 @login_required
 def ver_lugares():
@@ -98,6 +104,7 @@ def ver_lugares():
 
     return render_template('ver_sitios.html', sitios=sitios, recos=recos)
 
+# Ruta para agregar un lugar
 @app.route('/agregar-lugar', methods=['GET', 'POST'])
 @login_required
 def agregar_lugar():
@@ -136,6 +143,7 @@ def agregar_lugar():
             return redirect(url_for('ver_lugares'))
     return render_template('agregar_lugar.html', form=form, error=error)
     
+# Ruta para borrar un lugar
 @app.route('/borrar_lugar/<sitio_id>', methods=['DELETE'])
 def borrar_lugar(sitio_id):
     try:
@@ -144,12 +152,14 @@ def borrar_lugar(sitio_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Ruta para ver a los usuarios
 @app.route('/users')
 @login_required
 def users():
     users_list = collectionUsuarios.find()
     return render_template('usuarios.html', users=users_list)
 
+# Ruta para generar recomendaciones
 @app.route('/generar-recomendaciones', methods=['POST'])
 @login_required
 def generar_recomendaciones():
