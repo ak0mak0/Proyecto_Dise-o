@@ -93,7 +93,7 @@ def ver_lugares():
 
     # Añadir nombres de sitios cercanos y parecidos a las recomendaciones
     for reco in recos:
-        reco['sitios_cercanos_nombres'] = [{'nombre': sitios_dict.get(str(cercano), 'Desconocido')} for cercano in reco['sitios_cercanos']]
+        reco['sitios_cercanos_nombres'] = [{'nombre': sitios_dict.get(str(cercano["_id"]), 'Desconocido'), 'distancia': cercano["distancia"]} for cercano in reco['sitios_cercanos']]
         reco['sitios_parecidos_nombres'] = [sitios_dict.get(str(parecido), 'Desconocido') for parecido in reco['sitios_parecidos']]
 
     return render_template('ver_sitios.html', sitios=sitios, recos=recos)
@@ -119,12 +119,19 @@ def agregar_lugar():
             collectionSitios.insert_one({
                 "nombre": nombre,
                 "descripcion": descripcion,
+                "detalles": "",
                 "latitud": latitud,
                 "longitud": longitud,
                 "categorias": categoria,
                 "estado": estado,
+                "cant_visitas": 0,
+                "cant_likes": 0,
+                "calificacion_promedio": 0.0,
+                "cant_calificaciones": 0,
+                "reseñas": [],
+                "ultimo_ingreso": datetime.now(),
                 "fecha_creacion": datetime.now(),
-                'usuario_creo': current_user.username,
+                'usuario_creacion': current_user.username,
             })
             return redirect(url_for('ver_lugares'))
     return render_template('agregar_lugar.html', form=form, error=error)
