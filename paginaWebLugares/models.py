@@ -12,21 +12,25 @@ collectionSitios = db["sitios"]
 collectionUsuarios = db["usuarios"]
 collectionRecos = db["recos_sitios"]
 
+# Clase para el manejo de usuarios
 class User(UserMixin):
     def __init__(self, id, username, password):
         self.id = str(id)
         self.username = username
         self.password = password
     
+    # Método para guardar un usuario en la base de datos
     def save(self):
         collectionUsuarios.insert_one({
             "username": self.username,
             "password": self.password
         })
     
+    # Método para obtener el ID de un usuario
     def get_id(self):
         return self.id
     
+    # Método para obtener un usuario por su ID
     @staticmethod
     def get(id):
         id_buscar = ObjectId(id)
@@ -35,6 +39,7 @@ class User(UserMixin):
             return User(user["_id"], user["nombre"], user["password"])
         return None
     
+    # Método para encontrar un usuario por su nombre de usuario
     @staticmethod
     def find_by_username(username):
         user = collectionUsuarios.find_one({"nombre": username})
@@ -48,7 +53,9 @@ class User(UserMixin):
     def is_anonymous(self):
         return False
 
+# Clase para el manejo de recomendaciones
 class RecomendationHandler:
+    # Método para reiniciar la colección de recomendaciones
     @staticmethod
     def reset_recos_sitios_collection():
         try:
@@ -81,6 +88,7 @@ class RecomendationHandler:
         }
         db.create_collection("recos_sitios", validator=validator)
 
+    # Método para generar recomendaciones
     @staticmethod
     def generar_recomendaciones(self):
         sitios = collectionSitios.find()
@@ -98,6 +106,7 @@ class RecomendationHandler:
             collectionRecos.update_one({"_idsitio": sitio["_id"]}, {"$set": reco}, upsert=True)
             
 
+    # Método para calcular la distancia entre dos puntos geográficos
     def calcular_distancia(self, lat1, lon1, lat2, lon2):
         # Convertir grados a radianes
         lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
@@ -110,6 +119,7 @@ class RecomendationHandler:
         distance = 6371 * c  # Radio de la Tierra en kilómetros
         return distance
     
+    # Método para encontrar sitios cercanos a un sitio dado
     def encontrar_sitios_cercanos(self, sitio):
         sitios_cercanos = []
         sitios = collectionSitios.find()
@@ -123,6 +133,7 @@ class RecomendationHandler:
         sitios_cercanos.sort(key=lambda x: x["distancia"])
         return sitios_cercanos[:3]
     
+    # Método para encontrar sitios parecidos a un sitio dado
     def encontrar_sitios_parecidos(self, sitio):
         sitios_parecidos = []
         categorias_sitio = set(sitio["categorias"])

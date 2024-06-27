@@ -12,6 +12,7 @@ class MongoDBManager:
         self.client = None
         self.db = None
 
+    # Método para establecer la conexión con MongoDB Atlas
     def connect(self):
         # Obtener la configuración de la aplicación Flask
         config = current_app.config
@@ -27,11 +28,13 @@ class MongoDBManager:
         self.client = MongoClient(uri)
         self.db = self.client[dbname]
 
+    # Método para obtener la instancia de la base de datos
     def get_db(self):
         if self.db is None:
             self.connect()
         return self.db
 
+    # Método para crear una colección en la base de datos
     def create_collection(self, name, validator=None):
         db = self.get_db()
         if name not in db.list_collection_names():
@@ -40,16 +43,19 @@ class MongoDBManager:
             except errors.CollectionInvalid:
                 pass
 
+    # Método para eliminar una colección de la base de datos
     def delete_collection(self, name):
         db = self.get_db()
         if name in db.list_collection_names():
             db[name].drop()
 
+# Clase para manejar la colección de usuarios
 class UserManager:
     def __init__(self, mongodb_manager):
         self.db_manager = mongodb_manager
         self.reset_users_collection()
 
+    # Método para reiniciar la colección de usuarios
     def reset_users_collection(self):
         self.db_manager.delete_collection("usuarios")
         validator = {
@@ -90,11 +96,13 @@ class UserManager:
         }
         self.db_manager.create_collection("usuarios", validator=validator)
 
+# Clase para manejar la colección de sitios
 class SitiosManager:
     def __init__(self, mongodb_manager):
         self.db_manager = mongodb_manager
         self.reset_sitios_collection()
 
+    # Método para reiniciar la colección de sitios
     def reset_sitios_collection(self):
         self.db_manager.delete_collection("sitios")
         validator = {
@@ -123,11 +131,13 @@ class SitiosManager:
         }
         self.db_manager.create_collection("sitios", validator=validator)
 
+# Clase para manejar la colección de categorias
 class ReviewsManager:
     def __init__(self, mongodb_manager):
         self.db_manager = mongodb_manager
         self.reset_reviews_collection()
 
+    # Método para reiniciar la colección de reviews
     def reset_reviews_collection(self):
         self.db_manager.delete_collection("reviews")
         validator = {
@@ -172,11 +182,13 @@ class ReviewsManager:
         }
         self.db_manager.create_collection("reviews", validator=validator)
 
+# Clase para manejar la colección de categorias
 class RecosSitiosManager:
     def __init__(self, mongodb_manager):
         self.db_manager = mongodb_manager
         self.reset_recos_sitios_collection()
 
+    # Método para reiniciar la colección de recomendaciones de sitios
     def reset_recos_sitios_collection(self):
         self.db_manager.delete_collection("recos_sitios")
         validator = {
@@ -221,18 +233,22 @@ class Usuario:
         self.es_administrador = es_administrador if es_administrador is not None else False
         self.fecha_creacion = fecha_creacion if fecha_creacion else datetime.now()
 
+    # Método para establecer la contraseña del usuario
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    # Método para verificar la contraseña del usuario
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # Método para actualizar el estado del usuario
     def actualizar_estado(self, nuevo_estado):
         db = MongoDBManager().get_db()
         users_collection = db["usuarios"]
         users_collection.update_one({'_id': self._id}, {'$set': {'estado': nuevo_estado}})
         self.estado = nuevo_estado
 
+    # Método para buscar un usuario por nombre
     @classmethod
     def find_by_name(cls, nombre):
         db = MongoDBManager().get_db()
@@ -251,6 +267,7 @@ class Usuario:
             )
         return None
 
+    # Método para guardar un usuario en la base de datos
     def save(self):
         db = MongoDBManager().get_db()
         users_collection = db["usuarios"]
@@ -271,6 +288,7 @@ class Usuario:
             result = users_collection.insert_one(user_data)
             self._id = result.inserted_id
     
+    # Método para convertir el objeto a un diccionario
     def to_dict(self):
         return {
             "_id": str(self._id),
@@ -282,6 +300,7 @@ class Usuario:
             "fecha_creacion": self.fecha_creacion
         }
 
+    # Método para buscar un usuario por ID
     @classmethod
     def find_by_id(cls, user_id):
         db = MongoDBManager().get_db()
@@ -310,12 +329,14 @@ class Sitio:
         self.ultimo_ingreso = ultimo_ingreso if ultimo_ingreso else self.fecha_creacion
         self.usuario_creacion = usuario_creacion
     
+    # Método para obtener los sitios más visitados
     def get_top_visited_sites():
         db = MongoDBManager().get_db()
         sitios_collection = db["sitios"]
         top_sitios = sitios_collection.find().sort("cant_visitas", -1).limit(4)
         return list(top_sitios)
     
+    # Método para obtener los sitios más visitados
     @staticmethod
     def get_top_liked_sites():
         db = MongoDBManager().get_db()
@@ -324,6 +345,7 @@ class Sitio:
         top_sitios_ids = [str(sitio['_id']) for sitio in top_sitios]
         return top_sitios_ids
 
+    # Método para obtener todos los sitios
     @staticmethod
     def get_all_sites():
         db = MongoDBManager().get_db()
@@ -331,6 +353,7 @@ class Sitio:
         sitios = list(sitios_collection.find({}, {"nombre": 1}))  # Proyectamos solo el campo 'nombre'
         return sitios
 
+    # Método para obtener los detalles de un sitio
     @classmethod
     def from_json(cls, data):
         nombre = data.get("nombre")
@@ -345,6 +368,7 @@ class Sitio:
 
         return cls(nombre, descripcion, detalles, categorias, latitud, longitud)
 
+    # Método para buscar un sitio por ID
     @classmethod
     def find_by_id(cls, sitio_id):
         db = MongoDBManager().get_db()
@@ -353,6 +377,7 @@ class Sitio:
             return cls(**sitio_data)
         return None
 
+    # Método para convertir el objeto a un diccionario
     def to_dict(self):
         return {
             "nombre": self.nombre,
@@ -372,6 +397,7 @@ class Sitio:
             "usuario_creacion": self.usuario_creacion
         }
 
+    # Método para actualizar la información de un sitio
     def agregar_sitio(self):
         db = MongoDBManager().get_db()
         sitios_collection = db["sitios"]
@@ -383,6 +409,7 @@ class Sitio:
 
         return self._id
 
+    # Método para contar las reviews de un sitio
     def get_reviews(self):
         db = MongoDBManager().get_db()
         reviews_collection = db["reviews"]
@@ -403,12 +430,14 @@ class Review:
         self.usuario = usuario
         self.sitio = sitio
         
+    # Metodo para conseguir el estado de la visita
     def get_visito_status(self):
         existing_review = self.find_existing_review()
         if existing_review:
             return existing_review.get("visito", False)
         return None
         
+    # Metodo para guardar la review en la base de datos
     def save(self):
         db_manager = MongoDBManager()
         db = db_manager.get_db()
@@ -432,6 +461,7 @@ class Review:
         result = reviews_collection.insert_one(review_data)
         self._id = result.inserted_id
 
+    # Metodo para encontrar una review existente
     def find_existing_review(self):
         db_manager = MongoDBManager()
         db = db_manager.get_db()
@@ -439,6 +469,7 @@ class Review:
         existing_review = reviews_collection.find_one({"id_usuario": self.id_usuario, "id_sitio": self.id_sitio})
         return existing_review
 
+    # Metodo para registrar la visita a un sitio
     def register(self):
         db_manager = MongoDBManager()
         db = db_manager.get_db()
@@ -457,6 +488,7 @@ class Review:
             self.visito = True
             self.save()
 
+    # Metodo para agregar un like a una review
     def add_like(self):
         db_manager = MongoDBManager()
         db = db_manager.get_db()
@@ -488,6 +520,7 @@ class Review:
                     {"$set": {"like": True}}
                 )
 
+    # Metodo para agregar una calificación a una review
     def add_qualifi(self, valor):
         db_manager = MongoDBManager()
         db = db_manager.get_db()
@@ -546,6 +579,7 @@ class Review:
         else:
             raise ValueError("No existe una reseña para esta combinación de usuario y sitio.")
 
+    # Metodo para agregar una opinión a una review
     def add_opinion(self, opinion):
         db_manager = MongoDBManager()
         db = db_manager.get_db()
@@ -569,34 +603,44 @@ class Recomendaciones:
         self.user_id = user_id
         self.sitios_collection = self.db_manager.get_db()["sitios"]
         self.sitio = self.sitios_collection.find_one({"_id": self.sitio_id})
+        self.sitios_cercanos = []
+        self.sitios_parecidos = [] 
 
+    # Método para generar recomendaciones
     def generar_recomendaciones(self):
-        db = self.db_manager.get_db()
-
         if self.sitio:
-            sitios_cercanos = self.__find_closest_sites()
-            sitios_parecidos = self.__find_similar_sites()
+            self.sitios_cercanos = self.__find_closest_sites()
+            self.sitios_parecidos = self.__find_similar_sites()
 
-            reco = {
-                "_idsitio": self.sitio_id,
-                "sitios_cercanos": sitios_cercanos,
-                "sitios_parecidos": sitios_parecidos
-            }
+            self.save()
 
-            recos_sitios_collection = db["recos_sitios"]
-            recos_sitios_collection.update_one({"_idsitio": self.sitio_id}, {"$set": reco}, upsert=True)
+    # Metodo para guardar las recomendaciones en la base de datos
+    def save(self):
+        db = self.db_manager.get_db()
+        recos_sitios_collection = db["recos_sitios"]
 
-    def __find_closest_sites(self):
+        reco = {
+            "_idsitio": self.sitio_id,
+            "sitios_cercanos": self.sitios_cercanos(),
+            "sitios_parecidos": self.sitiosz_parecidos()
+        }
+
+        recos_sitios_collection.update_one({"_idsitio": self.sitio_id}, {"$set": reco}, upsert=True)
+                                           
+    # Metodo para encontrar los sitios más cercanos
+    def __find_closest_sites(self): 
         sitios_cercanos = []
         for otro_sitio in self.sitios_collection.find():
             if otro_sitio["_id"] != self.sitio["_id"]:
-                distancia = self.__calculate_distance(self.sitio["latitud"], self.sitio["longitud"], otro_sitio["latitud"], otro_sitio["longitud"])
+                distancia = self.__calculate_distance(self.sitio["latitud"], self.sitio["longitud"], otro_sitio["latitud"], 
+                                                      otro_sitio["longitud"])
                 sitios_cercanos.append({"_id": otro_sitio["_id"], "distancia": distancia})
 
         sitios_cercanos.sort(key=lambda x: x["distancia"])  # Ordenar por distancia
         sitios_cercanos = [sitio["_id"] for sitio in sitios_cercanos[:3]]  # Seleccionar los tres primeros
         return sitios_cercanos
 
+    # Metodo para encontrar los sitios más parecidos
     def __find_similar_sites(self):
         sitios_parecidos = []
         categorias_sitio = self.sitio["categorias"]
@@ -612,6 +656,7 @@ class Recomendaciones:
 
         return sitios_parecidos[:3]  # Limitar el número de sitios parecidos a 3
 
+    # Metodo para calcular la distancia entre dos puntos
     def __calculate_distance(self, lat1, lon1, lat2, lon2):
         # Convertir grados a radianes
         lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
@@ -624,6 +669,7 @@ class Recomendaciones:
         distance = 6371 * c  # Radio de la Tierra en kilómetros
         return distance
 
+    # Metodo para obtener los sitios cercanos
     def get_sitios_cercanos(self):
         db = self.db_manager.get_db()
         recos_sitios_collection = db["recos_sitios"]
@@ -635,6 +681,7 @@ class Recomendaciones:
         else:
             return []
 
+    # Metodo para obtener los sitios parecidos
     def get_sitios_parecidos(self):
         db = self.db_manager.get_db()
         recos_sitios_collection = db["recos_sitios"]

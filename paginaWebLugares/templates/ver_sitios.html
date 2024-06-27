@@ -37,7 +37,7 @@
                             {% for reco in recos %}
                                 {% if reco._idsitio == sitio._id %}
                                     {% for cercano in reco.sitios_cercanos_nombres %}
-                                        <li>{{ cercano.nombre }} (Distancia: {{ cercano.distancia }})</li>
+                                        <li>{{ cercano.nombre }} (Distancia: {{ cercano.distancia }}km)</li>
                                     {% endfor %}
                                 {% endif %}
                             {% endfor %}

@@ -2,11 +2,13 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField ,StringField, PasswordField, SubmitField, TextAreaField, FloatField, SelectMultipleField
 from wtforms.validators import DataRequired
 
+# Form para el login
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
+# Form para el registro
 class RegistroForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired()])
@@ -14,6 +16,7 @@ class RegistroForm(FlaskForm):
     es_admin = SelectField('es_admin', choices=[('si', 'Sí'), ('no', 'No')], validators=[DataRequired()])
     submit = SubmitField('Registro')
 
+# Form para agregar un lugar
 class AgregarLugarForm(FlaskForm):
     nombre = StringField('nombre', validators=[DataRequired()])
     descripcion = TextAreaField('descripcion', validators=[DataRequired()])
